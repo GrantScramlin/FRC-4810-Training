@@ -1,6 +1,5 @@
 #include "Arm.h"
 
-
 Arm::Arm()
 {
     m_pRobotIO = nullptr;
