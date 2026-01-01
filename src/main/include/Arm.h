@@ -42,3 +42,51 @@ namespace arm
     // Setpoint Constants
     static constexpr double dAutoRaiseSetpoint = 15.0;
 }
+
+class Arm
+{
+public:
+
+    // Constructor/Destructor
+    Arm();
+    ~Arm()
+        {  }
+
+    // Accessor Methods
+    inline void Home()
+        {  m_eCommand = arm::COMMAND_HOME;  }
+    inline void ManualRaise()
+        {  m_eCommand = arm::COMMAND_MANUAL_RAISE;  }
+    inline void ManualLower()
+        {  m_eCommand = arm::COMMAND_MANUAL_LOWER;  }
+    inline void AutoRaise()
+        {  m_eCommand = arm::COMMAND_AUTO_RAISE;  }
+    inline void Stop()
+        {  m_eCommand = arm::COMMAND_STOP;  }
+
+    inline bool IsIdle()
+        { return(m_eState == arm::eState::STATE_IDLE); }
+    inline bool IsHoming()
+        { return(m_eState == arm::eState::STATE_HOMING); }
+    inline bool IsManualRaising()
+        { return(m_eState == arm::eState::STATE_MANUAL_RAISE); }
+    inline bool IsManualLowering()
+        { return(m_eState == arm::eState::STATE_MANUAL_LOWER); }
+    inline bool IsAutoRaising()
+        { return(m_eState == arm::eState::STATE_AUTO_RAISE); }
+
+    // Class Methods
+    void Initialize( RobotIO *p_pRobotIO );
+    void Execute();
+    void UpdateInputStatus();
+    
+private:
+    arm::eState m_eState;
+    arm::eCommand m_eCommand;
+
+    RobotIO *m_pRobotIO;
+
+    frc::Timer *m_pTimeoutTimer;
+
+    //Add Motor Configs
+};
