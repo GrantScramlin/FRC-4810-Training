@@ -104,6 +104,7 @@ void MainStateMachine::Initialize(
 
    m_pRobotIO = p_pRobotIO;
    m_Drivetrain.Initialize( p_pRobotIO );
+   m_Arm.Initialize( p_pRobotIO );  //-GMS - Initialize Arm
 }
 
 //-------------------------------------------------------------------
@@ -112,7 +113,7 @@ void MainStateMachine::Initialize(
 
 void MainStateMachine::UpdateStatus()
 {
-
+   m_Arm.UpdateInputStatus();    //-GMS - Update Arm Status
 }
 
 //-------------------------------------------------------------------
@@ -139,6 +140,7 @@ void MainStateMachine::Execute()
 
          // Call the subsystem execute methods to allow them to advance
          // through the idle and start states.
+         m_Arm.Execute();
 
 
          // printf( "Main - Advancing To Idle State\n" );
@@ -154,7 +156,45 @@ void MainStateMachine::Execute()
 
       else if ( m_eState == RobotMain::eState::STATE_IDLE )
       {
-         
+         //-GMS Driver B button - Arm Home
+         if(m_pRobotIO->m_DriveController.GetBButton())
+         {
+            m_Arm.Home();
+
+            m_Arm.Execute();
+
+            m_eState = RobotMain::eState::STATE_ARM_HOMING;
+         }
+
+         //-GMS Driver Y button - Arm Manual Raise
+         else if(m_pRobotIO->m_DriveController.GetYButton())
+         {
+            m_Arm.ManualRaise();
+
+            m_Arm.Execute();
+
+            m_eState = RobotMain::eState::STATE_ARM_MANUAL_RAISE;
+         }
+
+         //-GMS Driver A button - Arm Manual Lower
+         else if(m_pRobotIO->m_DriveController.GetYButton())
+         {
+            m_Arm.ManualLower();
+
+            m_Arm.Execute();
+
+            m_eState = RobotMain::eState::STATE_ARM_MANUAL_LOWER;
+         }
+
+         //-GMS Driver X button - Arm Manual Lower
+         else if(m_pRobotIO->m_DriveController.GetXButton())
+         {
+            m_Arm.AutoRaise();
+
+            m_Arm.Execute();
+
+            m_eState = RobotMain::eState::STATE_ARM_AUTO_RAISE;
+         }
       }
 
       // *===================================================================*
@@ -162,6 +202,63 @@ void MainStateMachine::Execute()
       // *                          Command States                           *
       // *                                                                   *
       // *===================================================================*
+
+      //-GMS - Arm States
+      // *------------------*
+      // * Arm Homing State *
+      // *------------------*
+      else if( m_eState == RobotMain::eState::STATE_ARM_HOMING )
+      {
+         m_Arm.Execute();
+         if(m_Arm.IsIdle())
+         {
+            m_eState = RobotMain::eState::STATE_IDLE;
+         }
+      }
+      // *------------------------*
+      // * Arm Manual Raise State *
+      // *------------------------*
+      else if( m_eState == RobotMain::eState::STATE_ARM_MANUAL_RAISE )
+      {
+         if(!m_pRobotIO->m_DriveController.GetYButton())
+         {
+            m_Arm.Stop();
+         }
+
+         m_Arm.Execute();
+         if(m_Arm.IsIdle())
+         {
+            m_eState = RobotMain::eState::STATE_IDLE;
+         }
+      }
+      // *------------------------*
+      // * Arm Manual Lower State *
+      // *------------------------*
+      else if( m_eState == RobotMain::eState::STATE_ARM_MANUAL_LOWER )
+      {
+         if(!m_pRobotIO->m_DriveController.GetAButton())
+         {
+            m_Arm.Stop();
+         }
+
+         m_Arm.Execute();
+         if(m_Arm.IsIdle())
+         {
+            m_eState = RobotMain::eState::STATE_IDLE;
+         }
+      }
+      // *----------------------*
+      // * Arm Auto Raise State *
+      // *----------------------*
+      else if( m_eState == RobotMain::eState::STATE_ARM_AUTO_RAISE )
+      {
+         m_Arm.Execute();
+         if(m_Arm.IsIdle())
+         {
+            m_eState = RobotMain::eState::STATE_IDLE;
+         }
+      }
+
 
       // Code to be added
 

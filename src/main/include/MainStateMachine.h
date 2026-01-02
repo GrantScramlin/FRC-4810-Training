@@ -21,6 +21,8 @@
 #include "Drivetrain.h"                // Drivetrain state machine class
                                        //    definition
 
+#include "Arm.h"                       //-GMS - Arm State machine class
+
 // *------------------------------------------------*
 // * Top Level (Main) State Machine Enumerated Type *
 // *------------------------------------------------*
@@ -31,6 +33,12 @@ namespace RobotMain
    {
       STATE_START = 0,
       STATE_IDLE = 1,
+      //-GMS - Arm States
+      STATE_ARM_HOMING = 2,
+      STATE_ARM_MANUAL_RAISE = 3,
+      STATE_ARM_MANUAL_LOWER = 4,
+      STATE_ARM_AUTO_RAISE = 5,
+
       STATE_ERROR = 99
    };
 
@@ -68,6 +76,8 @@ class MainStateMachine
 
       // State Machine Object Instances.
       Drivetrain m_Drivetrain;
+      Arm m_Arm;        //-GMS Arm Object Instance
+
 };
 
 #endif // MAIN_STATE_MACHINE_H_
