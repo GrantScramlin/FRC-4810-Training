@@ -47,7 +47,7 @@ void Arm::Execute()
             // *--------------*
             if(m_eCommand == arm::COMMAND_HOME)
             {
-                if(/*At lower Limit*/)
+                if( m_pRobotIO->GetArmLimit() )
                 {
                     m_eCommand = arm::COMMAND_NONE;
                     return;
@@ -93,7 +93,7 @@ void Arm::Execute()
             // *----------------------*
             else if(m_eCommand == arm::COMMAND_MANUAL_LOWER)
             {
-                if(/*At lower Limit*/)
+                if(m_pRobotIO->GetArmLimit())
                 {
                     m_eCommand = arm::COMMAND_NONE;
                     return;
@@ -158,7 +158,7 @@ void Arm::Execute()
                 bIsTimedOut = true;
             }
 
-            if(/*Check Arm Limit Switch*/ || bIsTimedOut)
+            if(m_pRobotIO->GetArmLimit() || bIsTimedOut)
             {
                 //Stop Motors
                 m_pRobotIO->m_ArmMotor.Set(0);
@@ -211,7 +211,7 @@ void Arm::Execute()
                 bIsTimedOut = true;
             }
 
-            if(m_eCommand == arm::COMMAND_STOP || /*Check Arm Limit Switch*/ || bIsTimedOut)
+            if(m_eCommand == arm::COMMAND_STOP || m_pRobotIO->GetArmLimit() || bIsTimedOut)
             {
                 //Stop Motors
                 m_pRobotIO->m_ArmMotor.Set(0);

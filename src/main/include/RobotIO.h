@@ -54,14 +54,18 @@ class RobotIO
 
       // Accessor Methods.
 
-      
+      //-GMS - Arm Limit Accessor Method
+      inline bool GetArmLimit()
+         { return( m_ArmLimitSwitch.Get() ); }
 
       // Xbox Controllers
 
       frc::XboxController m_DriveController{ 0 };
       frc::XboxController m_OperatorController{ 1 };
 
-      // Arm Hardware
+      // Arm Hardware - GMS
       hardware::TalonFX m_ArmMotor{ 14 };
+      frc::DigitalInput m_ArmLimitSwitch{ 2 };
+
       
 };
